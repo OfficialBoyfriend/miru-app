@@ -446,7 +446,9 @@ class ExtensionService {
     return runExtension(
       () async {
         final jsPromise = await runtime.evaluateAsync(
-          'extension.latest($page)',
+          Platform.isMacOS
+              ? 'extension.latest($page)'
+              : 'stringify(()=>extension.latest($page))',
         );
         final jsResult = await runtime.handlePromise(
           jsPromise,
@@ -475,7 +477,9 @@ class ExtensionService {
   }) async {
     return runExtension(() async {
       final jsPromise = await runtime.evaluateAsync(
-        'extension.search("$kw",$page,${filter == null ? null : jsonEncode(filter)})',
+        Platform.isMacOS
+            ? 'extension.search("$kw",$page,${filter == null ? null : jsonEncode(filter)})'
+            : 'stringify(()=>extension.search("$kw",$page,${filter == null ? null : jsonEncode(filter)}))',
       );
       final jsResult = await runtime.handlePromise(
         jsPromise,
