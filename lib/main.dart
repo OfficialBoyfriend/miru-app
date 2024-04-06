@@ -58,11 +58,12 @@ void main(List<String> args) async {
       await windowManager.ensureInitialized();
       final sizeArr = MiruStorage.getSetting(SettingKey.windowSize).split(",");
       final size = Size(double.parse(sizeArr[0]), double.parse(sizeArr[1]));
-      WindowOptions windowOptions = WindowOptions(
+      final windowOptions = WindowOptions(
         size: size,
         center: true,
         skipTaskbar: false,
-        titleBarStyle: TitleBarStyle.hidden,
+        titleBarStyle:
+            Platform.isMacOS ? TitleBarStyle.normal : TitleBarStyle.hidden,
       );
       windowManager.waitUntilReadyToShow(windowOptions, () async {
         final position = MiruStorage.getSetting(SettingKey.windowPosition);
@@ -72,9 +73,7 @@ void main(List<String> args) async {
             double.parse(offsetArr[0]),
             double.parse(offsetArr[1]),
           );
-          await windowManager.setPosition(
-            offset,
-          );
+          await windowManager.setPosition(offset);
         }
         await windowManager.show();
         await windowManager.focus();

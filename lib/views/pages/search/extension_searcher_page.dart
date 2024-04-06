@@ -254,18 +254,21 @@ class _ExtensionSearcherPageState extends fluent.State<ExtensionSearcherPage> {
   }
 
   Widget _buildDesktop(BuildContext context) {
-    final suffix = Row(mainAxisSize: MainAxisSize.min, children: [
-      Padding(
-        padding: const EdgeInsetsDirectional.only(start: 2.0),
-        child: fluent.IconButton(
-          icon: const Icon(fluent.FluentIcons.chrome_close, size: 9.0),
-          onPressed: () {
-            _textEditingController.clear();
-            _onSearch("");
-          },
+    final suffix = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsetsDirectional.only(start: 2.0),
+          child: fluent.IconButton(
+            icon: const Icon(fluent.FluentIcons.chrome_close, size: 9.0),
+            onPressed: () {
+              _textEditingController.clear();
+              _onSearch("");
+            },
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -321,27 +324,27 @@ class _ExtensionSearcherPageState extends fluent.State<ExtensionSearcherPage> {
             onRefresh: _onRefresh,
             onLoad: _onLoad,
             child: LayoutBuilder(
-              builder: ((context, constraints) => GridView.builder(
-                    padding: const EdgeInsets.all(16),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: constraints.maxWidth ~/ 160,
-                      childAspectRatio: 0.6,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemCount: _data.length,
-                    itemBuilder: (context, index) {
-                      final item = _data[index];
-                      return ExtensionItemCard(
-                        title: item.title,
-                        url: item.url,
-                        package: widget.package,
-                        cover: item.cover,
-                        update: item.update,
-                        headers: item.headers,
-                      );
-                    },
-                  )),
+              builder: (context, constraints) => GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: constraints.maxWidth ~/ 160,
+                  childAspectRatio: 0.6,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemCount: _data.length,
+                itemBuilder: (context, index) {
+                  final item = _data[index];
+                  return ExtensionItemCard(
+                    title: item.title,
+                    url: item.url,
+                    package: widget.package,
+                    cover: item.cover,
+                    update: item.update,
+                    headers: item.headers,
+                  );
+                },
+              ),
             ),
           ),
         )

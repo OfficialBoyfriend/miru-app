@@ -443,19 +443,29 @@ class ExtensionService {
   }
 
   Future<List<ExtensionListItem>> latest(int page) async {
-    return runExtension(() async {
-      final jsResult = await runtime.handlePromise(
-        await runtime.evaluateAsync('stringify(()=>extension.latest($page))'),
-      );
-      List<ExtensionListItem> result =
-          jsonDecode(jsResult.stringResult).map<ExtensionListItem>((e) {
-        return ExtensionListItem.fromJson(e);
-      }).toList();
-      for (var element in result) {
-        element.headers ??= await _defaultHeaders;
-      }
-      return result;
-    });
+    return runExtension(
+      () async {
+        final jsPromise = await runtime.evaluateAsync(
+          'extension.latest($page)',
+        );
+        final jsResult = await runtime.handlePromise(
+          jsPromise,
+          timeout: const Duration(seconds: 15),
+        );
+
+        final data = jsonDecode(jsResult.stringResult);
+        if (data is! List) throw 'result is not list';
+
+        final result = data
+            .map<ExtensionListItem>((e) => ExtensionListItem.fromJson(e))
+            .toList();
+        for (var element in result) {
+          element.headers ??= await _defaultHeaders;
+        }
+
+        return result;
+      },
+    );
   }
 
   Future<List<ExtensionListItem>> search(
@@ -464,17 +474,24 @@ class ExtensionService {
     Map<String, List<String>>? filter,
   }) async {
     return runExtension(() async {
-      final jsResult = await runtime.handlePromise(
-        await runtime.evaluateAsync(
-            'stringify(()=>extension.search("$kw",$page,${filter == null ? null : jsonEncode(filter)}))'),
+      final jsPromise = await runtime.evaluateAsync(
+        'extension.search("$kw",$page,${filter == null ? null : jsonEncode(filter)})',
       );
-      List<ExtensionListItem> result =
-          jsonDecode(jsResult.stringResult).map<ExtensionListItem>((e) {
-        return ExtensionListItem.fromJson(e);
-      }).toList();
+      final jsResult = await runtime.handlePromise(
+        jsPromise,
+        timeout: const Duration(seconds: 15),
+      );
+
+      final data = jsonDecode(jsResult.stringResult);
+      if (data is! List) throw 'result is not list';
+
+      final result = data
+          .map<ExtensionListItem>((e) => ExtensionListItem.fromJson(e))
+          .toList();
       for (var element in result) {
         element.headers ??= await _defaultHeaders;
       }
+
       return result;
     });
   }

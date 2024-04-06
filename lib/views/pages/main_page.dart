@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,37 +69,39 @@ class _DesktopMainPageState extends State<DesktopMainPage> with WindowListener {
   @override
   Widget build(BuildContext context) {
     return fluent.NavigationView(
-      appBar: fluent.NavigationAppBar(
-        leading: () {
-          return fluent.IconButton(
-            icon: const Icon(fluent.FluentIcons.back, size: 12.0),
-            onPressed: () {
-              if (router.canPop()) {
-                context.pop();
-                setState(() {});
-              }
-            },
-          );
-        }(),
-        title: _title(),
-        actions: Obx(
-          () => Row(
-            children: [
-              const Spacer(),
-              ...c.actions,
-              SizedBox(
-                width: 138,
-                height: 50,
-                child: WindowCaption(
-                  backgroundColor: Colors.transparent,
-                  brightness: fluent.FluentTheme.of(context).brightness,
+      appBar: Platform.isMacOS
+          ? null
+          : fluent.NavigationAppBar(
+              leading: () {
+                return fluent.IconButton(
+                  icon: const Icon(fluent.FluentIcons.back, size: 12.0),
+                  onPressed: () {
+                    if (router.canPop()) {
+                      context.pop();
+                      setState(() {});
+                    }
+                  },
+                );
+              }(),
+              title: _title(),
+              actions: Obx(
+                () => Row(
+                  children: [
+                    const Spacer(),
+                    ...c.actions,
+                    SizedBox(
+                      width: 138,
+                      height: 50,
+                      child: WindowCaption(
+                        backgroundColor: Colors.transparent,
+                        brightness: fluent.FluentTheme.of(context).brightness,
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
-        automaticallyImplyLeading: false,
-      ),
+              ),
+              automaticallyImplyLeading: false,
+            ),
       paneBodyBuilder: (item, body) {
         return widget.child;
       },
